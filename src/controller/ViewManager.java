@@ -2,11 +2,13 @@ package controller;
 
 import java.awt.CardLayout;
 import java.awt.Container;
+import java.sql.SQLException;
 
 import javax.swing.JOptionPane;
 
 import data.Database;
 import model.BankAccount;
+import model.User;
 import view.ATM;
 import view.LoginView;
 
@@ -29,6 +31,10 @@ public class ViewManager {
 		this.db = new Database();
 	}
 	
+	public Database getDatabase() {
+		return db;
+	}
+	
 	///////////////////// INSTANCE METHODS ////////////////////////////////////////////
 	
 	/**
@@ -36,9 +42,10 @@ public class ViewManager {
 	 * 
 	 * @param accountNumber
 	 * @param pin
+	 * @throws SQLException 
 	 */
 	
-	public void login(String accountNumber, char[] pin) {
+	public void login(String accountNumber, char[] pin) throws SQLException {
 		try {
 			account = db.getAccount(Long.valueOf(accountNumber), Integer.valueOf(new String(pin)));
 			
@@ -88,5 +95,10 @@ public class ViewManager {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void makeAccount(int pin, int dob, long phone, String firstName, String lastName, String streetAddress, String city, String state, String zip) throws SQLException {
+		BankAccount newAccount = new BankAccount('Y', 100000001 + db.numberOfAccounts(), 0.0, new User(pin, dob, phone, firstName, lastName, streetAddress, city, state, zip));
+		db.insertAccount(newAccount);
 	}
 }

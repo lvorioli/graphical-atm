@@ -309,4 +309,16 @@ public class Database {
 			insertStmt.close();
 		}
 	}
+	
+	public int numberOfAccounts() throws SQLException {
+		stmt = conn.createStatement();
+		rs = stmt.executeQuery("SELECT COUNT(*) FROM accounts");
+		if (rs.next() && rs.getInt(1) != 0) {
+			return rs.getInt(1);
+		}
+		else {
+			return 0;
+		}
+		
+	}
 }
