@@ -56,10 +56,7 @@ public class CreateView extends JPanel implements ActionListener {
 	
 	private void initialize() {
 		this.setLayout(null);
-		// TODO
-		//
-		// this is a placeholder for this view and should be removed once you start
-		// building the CreateView.
+	
 		
 		this.add(new javax.swing.JLabel("CreateView", javax.swing.SwingConstants.CENTER));
 		

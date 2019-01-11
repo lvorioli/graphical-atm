@@ -10,6 +10,7 @@ import data.Database;
 import model.BankAccount;
 import model.User;
 import view.ATM;
+import view.HomeView;
 import view.LoginView;
 
 public class ViewManager {
@@ -18,6 +19,7 @@ public class ViewManager {
 	private Database db;					// a reference to the database
 	private BankAccount account;			// the user's bank account
 	private BankAccount destination;		// an account to which the user can transfer funds
+	private boolean previousLogin = false;
 	
 	/**
 	 * Constructs an instance (or object) of the ViewManager class.
@@ -53,6 +55,17 @@ public class ViewManager {
 				LoginView lv = ((LoginView) views.getComponents()[ATM.LOGIN_VIEW_INDEX]);
 				lv.updateErrorMessage("Invalid account number and/or PIN.");
 			} else {
+				HomeView hv = ((HomeView) views.getComponents()[ATM.HOME_VIEW_INDEX]);
+				
+				if(previousLogin == false) {
+					hv.initInformation();
+					previousLogin = true;
+				}
+				else {
+					hv.updateName();
+					hv.updateAccountNumber();
+					hv.updateBudget();
+				}
 				switchTo(ATM.HOME_VIEW);
 				
 				LoginView lv = ((LoginView) views.getComponents()[ATM.LOGIN_VIEW_INDEX]);
@@ -100,5 +113,48 @@ public class ViewManager {
 	public void makeAccount(int pin, int dob, long phone, String firstName, String lastName, String streetAddress, String city, String state, String zip) throws SQLException {
 		BankAccount newAccount = new BankAccount('Y', 100000001 + db.numberOfAccounts(), 0.0, new User(pin, dob, phone, firstName, lastName, streetAddress, city, state, zip));
 		db.insertAccount(newAccount);
+	}
+	
+	public BankAccount getAccount() {
+		return account;
+	}
+	
+	public boolean deposit(double depositAmount) {
+		if(account.deposit(depositAmount) == ATM.SUCCESS) {
+			db.updateAccount(account);
+			HomeView hv = ((HomeView) views.getComponents()[ATM.HOME_VIEW_INDEX]);
+			hv.updateBudget();
+			System.out.println(account.getBalance());
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	public boolean withdraw(double withdrawAmount) {
+		if(account.withdraw(withdrawAmount) == ATM.SUCCESS) {
+			db.updateAccount(account);
+			HomeView hv = ((HomeView) views.getComponents()[ATM.HOME_VIEW_INDEX]);
+			hv.updateBudget();
+			System.out.println(account.getBalance());
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	public boolean transfer(long accountNumber, double transferAmount) {
+		if(account.transfer(db.getAccount(accountNumber), transferAmount) == ATM.SUCCESS) {
+			db.updateAccount(account);
+			db.updateAccount(db.getAccount(accountNumber));
+			HomeView hv = ((HomeView) views.getComponents()[ATM.HOME_VIEW_INDEX]);
+			hv.updateBudget();
+			System.out.println(account.getBalance());
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 }

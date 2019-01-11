@@ -1,12 +1,14 @@
 package view;
 
 import java.awt.Font;
+
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.math.RoundingMode;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -17,6 +19,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import controller.ViewManager;
+
+import java.text.DecimalFormat;
 
 @SuppressWarnings("serial")
 public class HomeView extends JPanel implements ActionListener {
@@ -30,6 +34,9 @@ public class HomeView extends JPanel implements ActionListener {
 	private JButton logoutButton;
 	private JButton powerButton;
 	private JLabel errorMessageLabel;
+	private JLabel label1;
+	private JLabel label2;
+	private JLabel label3;
 	
 	/**
 	 * Constructs an instance (or objects) of the HomeView class.
@@ -62,52 +69,73 @@ public class HomeView extends JPanel implements ActionListener {
 		initDepositButton();
 		initWithdrawButton();
 		initTransferButton();
-		initPersonalInformationButton();
-		initCloseAccountButton();
+		//initPersonalInformationButton();
+	//	initCloseAccountButton();
 		initLogoutButton();
 		//initErrorMessageLabel();
 		initPowerButton();
 	}
 	
+	public void initInformation() {
+		DecimalFormat df = new DecimalFormat("#.##");
+		df.setRoundingMode(RoundingMode.DOWN);
 	
+		
+		String information1 = "Name: " + manager.getAccount().getUser().getFirstName() + " " + manager.getAccount().getUser().getLastName();
+		String information2 = "Account Number: " + manager.getAccount().getAccountNumber();
+		String information3 = "Balance: $" + df.format(manager.getAccount().getBalance());
+		label1 = new JLabel(information1, SwingConstants.CENTER);
+		label2 = new JLabel(information2, SwingConstants.CENTER);
+		label3 = new JLabel(information3, SwingConstants.CENTER);
+		label1.setBounds(150, 10, 200, 35);
+		label1.setFont(new Font("DialogInput", Font.BOLD, 12));
+		label2.setBounds(150, 25, 200, 35);
+		label2.setFont(new Font("DialogInput", Font.BOLD, 12));
+		label3.setBounds(150, 40, 200, 35);
+		label3.setFont(new Font("DialogInput", Font.BOLD, 12));
+		
+		this.add(label1);
+		this.add(label2);
+		this.add(label3);
+	}
 	private void initDepositButton() {
 		depositButton = new JButton("Deposit");
-		depositButton.setBounds(126, 50, 200, 35);
+		depositButton.setBounds(150, 90, 200, 35);
 		depositButton.addActionListener(this);
 		
 		this.add(depositButton);
 	}
 	private void initWithdrawButton() {
 		withdrawButton = new JButton("Withdraw");
-		withdrawButton.setBounds(126, 90, 200, 35);
+		withdrawButton.setBounds(150, 130, 200, 35);
 		withdrawButton.addActionListener(this);
 		
 		this.add(withdrawButton);
 	}
 	private void initTransferButton() {
 		transferButton = new JButton("Transfer");
-		transferButton.setBounds(126, 130, 200, 35);
+		transferButton.setBounds(150, 170, 200, 35);
 		transferButton.addActionListener(this);
 		
 		this.add(transferButton);
 	}
 	private void initPersonalInformationButton() {
 		personalInformationButton = new JButton("Personal Information");
-		personalInformationButton.setBounds(126, 170, 200, 35);
+		personalInformationButton.setBounds(150, 210, 200, 35);
 		personalInformationButton.addActionListener(this);
 		
 		this.add(personalInformationButton);
 	}
 	private void initCloseAccountButton() {
 		closeAccountButton = new JButton("Close Account");
-		closeAccountButton.setBounds(126, 210, 200, 35);
+		closeAccountButton.setBounds(150, 240, 200, 35);
 		closeAccountButton.addActionListener(this);
 		
 		this.add(closeAccountButton);
 	}
 	private void initLogoutButton() {
 		logoutButton = new JButton("Logout");
-		logoutButton.setBounds(126, 250, 200, 35);
+		logoutButton.setBounds(150, 290, 200, 35);
 		logoutButton.addActionListener(this);
 		
 		this.add(logoutButton);
@@ -126,6 +154,21 @@ public class HomeView extends JPanel implements ActionListener {
 		}
 		
 		this.add(powerButton);
+	}
+	public void updateName() {
+		String information1 = "Name: " + manager.getAccount().getUser().getFirstName() + " " + manager.getAccount().getUser().getLastName();
+		label3.setText(information1);
+	}
+	public void updateAccountNumber() {
+		String information2 = "Account Number: " + manager.getAccount().getAccountNumber();
+		label3.setText(information2);
+	}
+	public void updateBudget() {
+		DecimalFormat df = new DecimalFormat("#.##");
+		df.setRoundingMode(RoundingMode.DOWN);
+		
+		String information3 = "Balance: $" + df.format(manager.getAccount().getBalance());
+		label3.setText(information3);
 	}
 	/*
 	 * HomeView is not designed to be serialized, and attempts to serialize will throw an IOException.
@@ -149,12 +192,23 @@ public class HomeView extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		
-		// TODO
-		//
-		// this is where you'll setup your action listener, which is responsible for
-		// responding to actions the user might take in this view (an action can be a
-		// user clicking a button, typing in a textfield, etc.).
-		//
-		// feel free to use my action listener in LoginView.java as an example.
+		Object source = e.getSource();
+		
+		if(source.equals(depositButton)) {
+			manager.switchTo(ATM.DEPOSIT_VIEW);
+		}
+		else if(source.equals(withdrawButton)) {
+			manager.switchTo(ATM.WITHDRAW_VIEW);
+		}
+		else if(source.equals(transferButton)) {
+			manager.switchTo(ATM.TRANSFER_VIEW);
+		}
+		else if(source.equals(logoutButton)) {
+			manager.switchTo(ATM.LOGIN_VIEW);
+		}
+		else if(source.equals(powerButton)) {
+			manager.shutdown();
+		}
+		
 	}
 }
