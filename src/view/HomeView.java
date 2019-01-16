@@ -57,7 +57,7 @@ public class HomeView extends JPanel implements ActionListener {
 	 * Initializes the HomeView components.
 	 */
 	
-	private void initialize() {
+	public void initialize() {
 		this.setLayout(null);
 		// TODO
 		//
@@ -69,8 +69,8 @@ public class HomeView extends JPanel implements ActionListener {
 		initDepositButton();
 		initWithdrawButton();
 		initTransferButton();
-		//initPersonalInformationButton();
-	//	initCloseAccountButton();
+		initPersonalInformationButton();
+		initCloseAccountButton();
 		initLogoutButton();
 		//initErrorMessageLabel();
 		initPowerButton();
@@ -128,7 +128,7 @@ public class HomeView extends JPanel implements ActionListener {
 	}
 	private void initCloseAccountButton() {
 		closeAccountButton = new JButton("Close Account");
-		closeAccountButton.setBounds(150, 240, 200, 35);
+		closeAccountButton.setBounds(150, 250, 200, 35);
 		closeAccountButton.addActionListener(this);
 		
 		this.add(closeAccountButton);
@@ -154,14 +154,6 @@ public class HomeView extends JPanel implements ActionListener {
 		}
 		
 		this.add(powerButton);
-	}
-	public void updateName() {
-		String information1 = "Name: " + manager.getAccount().getUser().getFirstName() + " " + manager.getAccount().getUser().getLastName();
-		label3.setText(information1);
-	}
-	public void updateAccountNumber() {
-		String information2 = "Account Number: " + manager.getAccount().getAccountNumber();
-		label3.setText(information2);
 	}
 	public void updateBudget() {
 		DecimalFormat df = new DecimalFormat("#.##");
@@ -202,6 +194,12 @@ public class HomeView extends JPanel implements ActionListener {
 		}
 		else if(source.equals(transferButton)) {
 			manager.switchTo(ATM.TRANSFER_VIEW);
+		}
+		else if(source.equals(personalInformationButton)) {
+			manager.switchTo(ATM.INFORMATION_VIEW);
+		}
+		else if(source.equals(closeAccountButton)) {
+			manager.closeAccount();
 		}
 		else if(source.equals(logoutButton)) {
 			manager.switchTo(ATM.LOGIN_VIEW);
